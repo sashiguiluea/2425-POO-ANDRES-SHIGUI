@@ -1,3 +1,4 @@
+import os
 """
 Clase que representa un producto en el inventario.
 
@@ -46,26 +47,34 @@ class Inventario:
 
     # Método para cargar el inventario desde el archivo
     def cargar_inventario(self):
+        """Carga el inventario desde un archivo de texto."""
+
+        # Si el archivo no existe, lo crea vacío
+        if not os.path.exists(self.archivo):
+            print("Archivo de inventario no encontrado. Creando uno nuevo...")
+            open(self.archivo, 'w').close()
+            return  # No hay nada más que cargar, así que salimos del método
+
         try:
-            # Abre el archivo en modo lectura, con Context Managers(with)
+            # Abre el archivo en modo lectura con Context Managers (with)
             with open(self.archivo, 'r') as f:
                 for line in f:
-                    # Crea un objeto Producto a partir de cada línea y lo agrega al diccionario
                     producto = Producto.from_string(line)
-                    if producto:
+                    if producto:  # Verificar que la conversión fue exitosa
                         self.productos[producto.id_producto] = producto
-        except FileNotFoundError:
-            # Si el archivo no se encuentra, informa al usuario
-            print("Archivo de inventario no encontrado. Se creará uno nuevo al guardar.")
+        except (FileNotFoundError, PermissionError) as e:
+            print(f"Error al cargar el inventario: {e}")
 
     # Método para guardar el inventario en el archivo
-    def guardar_inventario(self):
+    def guardar_inventario(self,mensaje=True):
         try:
             # Abre el archivo en modo escritura
             with open(self.archivo, 'w') as f:
                 for producto in self.productos.values():
                     # Escribe cada producto en el archivo
                     f.write(str(producto) + '\n')
+            if mensaje:
+                print("Inventario guardado con éxito.")
         except Exception as e:
             # Captura cualquier excepción y muestra un mensaje de error
             print(f"Error al guardar el inventario: {e}")
@@ -76,11 +85,13 @@ class Inventario:
             print("Producto ya existe.")  # Informa si el producto ya está en el inventario
         else:
             self.productos[producto.id_producto] = producto  # Agrega el producto al diccionario
+            self.guardar_inventario()  # Guarda el inventario en el archivo
 
     # Método para eliminar un producto del inventario
     def eliminar_producto(self, id_producto):
         if id_producto in self.productos:
             del self.productos[id_producto]  # Elimina el producto del diccionario
+            self.guardar_inventario()  # Guarda el inventario en el archivo
             print(f"Producto {id_producto} eliminado.")
         else:
             print("Producto no encontrado.")  # Informa si el producto no está en el inventario
@@ -92,6 +103,7 @@ class Inventario:
                 self.productos[id_producto].cantidad = cantidad  # Actualiza la cantidad
             if precio is not None:
                 self.productos[id_producto].precio = precio  # Actualiza el precio
+            self.guardar_inventario()  # Guarda el inventario en el archivo
             print(f"Producto {id_producto} actualizado.")
         else:
             print("Producto no encontrado.")  # Informa si el producto no está en el inventario
@@ -135,30 +147,32 @@ def menu():
 
         if opcion == '1':
             # Opción para agregar un producto
-            id_producto = input("ID del Producto: ")
-            nombre = input("Nombre: ")
-            cantidad = int(input("Cantidad: "))
-            precio = float(input("Precio: "))
-            producto = Producto(id_producto, nombre, cantidad, precio)  # Crea un nuevo producto
-            inventario.agregar_producto(producto)  # Agrega el producto al inventario
-            inventario.guardar_inventario()  # Guarda el inventario en el archivo
-            print("Inventario guardado con exito...")  # Mensaje de salida
+            try:
+                id_producto = input("ID del Producto: ").strip()
+                nombre = input("Nombre: ").strip()
+                cantidad = int(input("Cantidad: "))
+                precio = float(input("Precio: "))
+                if cantidad < 0 or precio < 0:
+                    raise ValueError("Cantidad y precio deben ser positivos.")
+                producto = Producto(id_producto, nombre, cantidad, precio)
+                inventario.agregar_producto(producto)
+            except ValueError:
+                print("Error: Entrada inválida. Asegúrese de ingresar valores correctos.")
         elif opcion == '2':
             # Opción para eliminar un producto
             id_producto = input("ID del Producto a eliminar: ")
             inventario.eliminar_producto(id_producto)  # Elimina el producto del inventario
-            inventario.guardar_inventario()  # Guarda el inventario en el archivo
-            print("Inventario eliminado con exito...")  # Mensaje de salida
         elif opcion == '3':
             # Opción para actualizar un producto
-            id_producto = input("ID del Producto a actualizar: ")
-            cantidad = input("Nueva Cantidad (dejar en blanco si no cambia): ")
-            precio = input("Nuevo Precio (dejar en blanco si no cambia): ")
-            cantidad = int(cantidad) if cantidad else None  # Convierte a int o None
-            precio = float(precio) if precio else None  # Convierte a float o None
-            inventario.actualizar_producto(id_producto, cantidad, precio)  # Actualiza el producto
-            inventario.guardar_inventario()  # Guarda el inventario en el archivo
-            print("Inventario actualizadocon exito...")  # Mensaje de salida
+            id_producto = input("ID del Producto a actualizar: ").strip()
+            cantidad = input("Nueva Cantidad (dejar en blanco si no cambia): ").strip()
+            precio = input("Nuevo Precio (dejar en blanco si no cambia): ").strip()
+            try:
+                cantidad = int(cantidad) if cantidad else None
+                precio = float(precio) if precio else None
+                inventario.actualizar_producto(id_producto, cantidad, precio)
+            except ValueError:
+                print("Error: Entrada inválida para cantidad o precio.")
         elif opcion == '4':
             # Opción para buscar un producto
             nombre_producto = input("Ingrese el nombre del producto a buscar: ")
