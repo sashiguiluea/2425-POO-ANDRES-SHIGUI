@@ -47,7 +47,7 @@ class Inventario:
     # Método para cargar el inventario desde el archivo
     def cargar_inventario(self):
         try:
-            # Abre el archivo en modo lectura
+            # Abre el archivo en modo lectura, con Context Managers(with)
             with open(self.archivo, 'r') as f:
                 for line in f:
                     # Crea un objeto Producto a partir de cada línea y lo agrega al diccionario
