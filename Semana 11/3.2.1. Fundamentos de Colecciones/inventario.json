@@ -1,0 +1,14 @@
+{
+    "01": {
+        "id_producto": "01",
+        "nombre": "Atun",
+        "cantidad": 2,
+        "precio": 3.5
+    },
+    "02": {
+        "id_producto": "02",
+        "nombre": "Arroz",
+        "cantidad": 6,
+        "precio": 1.5
+    }
+}
