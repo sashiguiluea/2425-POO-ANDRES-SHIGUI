@@ -80,10 +80,12 @@ class Inventario:
         else:
             print("Producto no encontrado.")
 
-    def buscar_producto(self, id_producto):
-        """Busca un producto en el inventario por su ID."""
-        if id_producto in self.productos:
-            print(self.productos[id_producto])  # Mostrar producto encontrado
+    def buscar_producto(self, nombre_producto):
+        """Busca productos en el inventario por su nombre."""
+        encontrados = [prod for prod in self.productos.values() if nombre_producto.lower() in prod.nombre.lower()]
+        if encontrados:
+            for producto in encontrados:
+                print(producto)  # Mostrar productos encontrados
         else:
             print("Producto no encontrado.")
 
@@ -141,8 +143,8 @@ def menu():
             inventario.actualizar_producto(id_producto, cantidad, precio)
         elif opcion == '4':
             # Opción para buscar un producto
-            id_producto = input("ID del Producto a buscar: ")
-            inventario.buscar_producto(id_producto)
+            nombre_producto = input("Nombre del Producto a buscar: ")
+            inventario.buscar_producto(nombre_producto)
         elif opcion == '5':
             # Opción para mostrar el inventario
             inventario.mostrar_inventario()
@@ -156,3 +158,4 @@ def menu():
 
 if __name__ == "__main__":
     menu()  # Iniciar el menú principal
+
