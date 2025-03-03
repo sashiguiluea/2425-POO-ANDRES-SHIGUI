@@ -1,0 +1,30 @@
+{
+    "001": {
+        "isbn": "001",
+        "titulo": "Fundamentos de Java",
+        "autor": "Herbert Schildt",
+        "categoria": "Programaci\u00f3n",
+        "prestado": true
+    },
+    "002": {
+        "isbn": "002",
+        "titulo": "POO en Java",
+        "autor": "Clay Aldas",
+        "categoria": "Programaci\u00f3n",
+        "prestado": true
+    },
+    "003": {
+        "isbn": "003",
+        "titulo": "El Tutorial Python",
+        "autor": "Guido Rossum",
+        "categoria": "Programaci\u00f3n",
+        "prestado": false
+    },
+    "004": {
+        "isbn": "004",
+        "titulo": "Aprendizaje MySQL",
+        "autor": "Hernando Buena\u00f1o",
+        "categoria": "Base de Datos",
+        "prestado": true
+    }
+}

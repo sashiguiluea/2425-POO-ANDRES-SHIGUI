@@ -1,0 +1,27 @@
+{
+    "01": {
+        "id_usuario": "01",
+        "nombre": "Andr\u00e9s shigui",
+        "libros_prestados": [
+            "001",
+            "004"
+        ]
+    },
+    "02": {
+        "id_usuario": "02",
+        "nombre": "Alejandra",
+        "libros_prestados": [
+            "002"
+        ]
+    },
+    "03": {
+        "id_usuario": "03",
+        "nombre": "Jhomayra",
+        "libros_prestados": []
+    },
+    "04": {
+        "id_usuario": "04",
+        "nombre": "Fernando",
+        "libros_prestados": []
+    }
+}
