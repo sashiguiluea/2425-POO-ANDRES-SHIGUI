@@ -13,7 +13,7 @@ class AplicacionGUI:
         :param ventana: Instancia de Tkinter.Tk() que representa la ventana principal.
         """
         self.ventana = ventana
-        self.ventana.title("Aplicación GUI con Tabla")  # Título de la ventana
+        self.ventana.title("Aplicación Básica GUI con Tabla")  # Título de la ventana
         self.ventana.geometry("600x400")  # Tamaño inicial de la ventana
 
         # Menú superior
