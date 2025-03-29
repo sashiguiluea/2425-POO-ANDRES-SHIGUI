@@ -36,47 +36,72 @@ class TaskApp:
 
         # Botón para marcar una tarea como completada
         self.complete_button = tk.Button(button_frame, text="Marcar como Completada",
-                                         command=lambda: self.toggle_task_completion(complete=True))
+                                         command=self.mark_task)
         self.complete_button.grid(row=0, column=0, padx=5)
 
         # Botón para desmarcar una tarea
         self.uncomplete_button = tk.Button(button_frame, text="Desmarcar Tarea",
-                                           command=lambda: self.toggle_task_completion(complete=False))
+                                           command=self.unmark_task)
         self.uncomplete_button.grid(row=0, column=1, padx=5)
 
         # Botón para eliminar una tarea seleccionada
         self.delete_button = tk.Button(button_frame, text="Eliminar Tarea", command=self.delete_task)
         self.delete_button.grid(row=0, column=2, padx=5)
 
+        # Configuración de atajos de teclado
+        self.root.bind('<Escape>', lambda e: self.root.quit())
+        self.root.bind('c', lambda e: self.mark_task())  # Tecla 'C' para marcar como completada
+        self.root.bind('u', lambda e: self.unmark_task())  # Tecla 'U' para desmarcar tarea
+        self.root.bind('d', lambda e: self.delete_task())  # Tecla 'D' para eliminar
+        self.root.bind('<Delete>', lambda e: self.delete_task())  # Tecla 'Delete' para eliminar
+        self.root.bind('<Return>', lambda e: self.mark_task() if self.tasks.selection() else self.add_task())
+
         # Evento para añadir tarea con la tecla Enter
         self.task_entry.bind('<Return>', lambda event: self.add_task())
 
-        # Evento para cerrar la aplicación con la tecla Escape
-        self.root.bind('<Escape>', lambda event: self.root.destroy())
-
     def add_task(self):
         """Método para añadir una nueva tarea a la lista."""
-        task = self.task_entry.get().strip()  # Obtener el texto ingresado eliminando espacios en blanco
+        task = self.task_entry.get().strip()
         if task:
-            self.tasks.insert('', tk.END, values=(task,))  # Agregar la tarea a la lista
-            self.task_entry.delete(0, tk.END)  # Limpiar el campo de entrada
+            self.tasks.insert('', tk.END, values=(task,))
+            self.task_entry.delete(0, tk.END)
         else:
             messagebox.showwarning("Advertencia", "Por favor, ingresa una tarea.")
 
     def toggle_task_completion(self, event=None, complete=None):
         """Método para marcar o desmarcar una tarea como completada mediante doble clic."""
-        selected_item = self.tasks.selection()  # Obtener la tarea seleccionada
+        selected_item = self.tasks.selection()
         if selected_item:
             for item in selected_item:
                 task_text = self.tasks.item(item, 'values')[0]
                 if task_text.startswith("✔ "):
-                    # Si la tarea ya está marcada como completada, se desmarca
                     self.tasks.item(item, values=(task_text.replace("✔ ", ""),))
                 else:
-                    # Si la tarea no está marcada, se marca como completada
                     self.tasks.item(item, values=(f"✔ {task_text}",))
         else:
             messagebox.showinfo("Información", "Selecciona una tarea para cambiar su estado.")
+
+    def mark_task(self):
+        """Método para marcar una tarea como completada."""
+        selected_item = self.tasks.selection()
+        if selected_item:
+            for item in selected_item:
+                task_text = self.tasks.item(item, 'values')[0]
+                if not task_text.startswith("✔ "):
+                    self.tasks.item(item, values=(f"✔ {task_text}",))
+        else:
+            messagebox.showinfo("Información", "Selecciona una tarea para marcar como completada.")
+
+    def unmark_task(self):
+        """Método para desmarcar una tarea completada."""
+        selected_item = self.tasks.selection()
+        if selected_item:
+            for item in selected_item:
+                task_text = self.tasks.item(item, 'values')[0]
+                if task_text.startswith("✔ "):
+                    self.tasks.item(item, values=(task_text.replace("✔ ", ""),))
+        else:
+            messagebox.showinfo("Información", "Selecciona una tarea para desmarcar.")
 
     def delete_task(self):
         """Método para eliminar la tarea seleccionada de la lista."""
